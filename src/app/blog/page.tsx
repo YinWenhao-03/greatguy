@@ -49,17 +49,13 @@ export default function BlogPage() {
     
     // 监听 localStorage 变化（当其他标签页点赞时）
     const handleStorageChange = () => {
-      const postLikes = JSON.parse(localStorage.getItem('postLikes') || '{}')
-      const updatedPosts = posts.map(post => ({
-        ...post,
-        likes: postLikes[post.slug] || post.likes
-      }))
-      setPosts(updatedPosts)
+      // 不依赖 posts 状态，重新获取最新数据
+      fetchPosts()
     }
     
     window.addEventListener('storage', handleStorageChange)
     return () => window.removeEventListener('storage', handleStorageChange)
-  }, [posts])
+  }, [])
 
   const handleLogout = () => {
     localStorage.removeItem('user')
