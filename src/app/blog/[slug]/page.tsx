@@ -4,13 +4,34 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { blogPosts } from "@/content/blog"
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const { slug } = params
-  const post = blogPosts.find((p) => p.slug === slug)
-  const [likes, setLikes] = useState(post?.likes || 0)
+  const [post, setPost] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [likes, setLikes] = useState(0)
   const [hasLiked, setHasLiked] = useState(false)
+
+  useEffect(() => {
+    // 从 API 获取文章详情
+    const fetchPost = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/blog/${slug}`)
+        if (response.ok) {
+          const data = await response.json()
+          setPost(data)
+          setLikes(data.likes)
+        }
+      } catch (error) {
+        console.error('获取文章详情失败:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchPost()
+  }, [slug])
 
   useEffect(() => {
     // 从 localStorage 加载点赞数据
@@ -29,6 +50,16 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     
     loadLikeData()
   }, [slug])
+
+  if (loading) {
+    return (
+      <div className="container py-10">
+        <div className="flex justify-center items-center py-20">
+          <p className="text-muted-foreground">加载中...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!post) {
     return (
@@ -91,7 +122,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     <div className="container py-10">
       <div className="max-w-3xl mx-auto">
         <div className="mb-6">
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" size="sm">
             <Link href="/blog">返回博客</Link>
           </Button>
         </div>

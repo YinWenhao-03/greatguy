@@ -14,6 +14,7 @@ model User {
   role      String   @default("user")
   createdAt DateTime @default(now())
   posts     Post[]
+  works     Work[]
 }
 
 model Post {
@@ -26,4 +27,86 @@ model Post {
   likes     Int      @default(0)
   slug      String   @unique
   createdAt DateTime @default(now())
+}
+
+model Work {
+  id             String   @id @default(cuid())
+  title          String
+  subtitle       String
+  slug           String   @unique
+  imageUrl       String
+  tags           String[]
+  status         String   @default("ready")
+  summary        String
+  files          Json?
+  galleryImages  String[]
+  author         User     @relation(fields: [authorId], references: [id])
+  authorId       String
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  title       String
+  org         String
+  period      String
+  badges      String[]
+  sectionEyebrow  String
+  sectionTitle    String
+  sectionDescription String
+  achievementsTitle String
+  achievements  Json
+  methodsTitle String
+  methods     Json
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model StackGroup {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  items       String[]
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  school      String
+  badge       String
+  detail      String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Award {
+  id          String   @id @default(cuid())
+  title       String
+  detail      String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model HeroStat {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SiteConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
